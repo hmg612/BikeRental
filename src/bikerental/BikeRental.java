@@ -13,6 +13,10 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import view.LoginPage;
+import view.MyPage;
+import view.Notice;
+import view.RentalPage;
+import view.TicketPage;
 
 /**
  *

@@ -9,6 +9,6 @@ package bike.model;
  *
  * @author HONG
  */
-public class bikeDTO {
+public class BikeDAO {
     
 }

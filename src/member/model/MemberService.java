@@ -9,6 +9,15 @@ package member.model;
  *
  * @author HONG
  */
-public class memberService {
+public class MemberService {
     
+    private static String userid;
+
+    public static String getUserid() {
+        return userid;
+    }
+
+    public static void setUserid(String userid) {
+        MemberService.userid = userid;
+    }
 }

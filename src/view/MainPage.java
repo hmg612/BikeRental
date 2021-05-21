@@ -5,17 +5,25 @@
  */
 package view;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import member.model.MemberService;
+
 /**
  *
  * @author HONG
  */
-public class MainPage extends javax.swing.JFrame {
+public class MainPage extends javax.swing.JFrame implements ActionListener{
 
     /**
      * Creates new form MainPage
      */
     public MainPage() {
+        super("메인화면");
+        
         initComponents();
+        init();
+        addEvent();
     }
 
     /**
@@ -28,19 +36,18 @@ public class MainPage extends javax.swing.JFrame {
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        tfUserid = new javax.swing.JTextField();
         jPanel3 = new javax.swing.JPanel();
         btNotice = new javax.swing.JButton();
         btRental = new javax.swing.JButton();
         btTicket = new javax.swing.JButton();
         btMypage = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
+        btLogout = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jLabel1.setText("님, 반갑습니다!");
-
-        jTextField1.setText("jTextField1");
 
         btNotice.setText("공지사항");
 
@@ -69,25 +76,28 @@ public class MainPage extends javax.swing.JFrame {
                 .addComponent(btTicket, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btMypage, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addGap(14, 14, 14))
         );
 
         jLabel3.setIcon(new javax.swing.ImageIcon("D:\\mywork\\project\\BikeRental\\images\\guy-with-a-backpack-riding-a-bicycle-illustration_165429-225 - 복사본.jpg")); // NOI18N
+
+        btLogout.setText("로그아웃");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                .addContainerGap(12, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 344, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
                         .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btLogout)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(tfUserid, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel1)))
                 .addContainerGap())
@@ -98,13 +108,14 @@ public class MainPage extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(tfUserid, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btLogout))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 410, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 15, Short.MAX_VALUE))
-                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(jLabel3)
+                        .addGap(0, 7, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 
@@ -147,6 +158,7 @@ public class MainPage extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btLogout;
     private javax.swing.JButton btMypage;
     private javax.swing.JButton btNotice;
     private javax.swing.JButton btRental;
@@ -154,6 +166,40 @@ public class MainPage extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel3;
-    private javax.swing.JTextField jTextField1;
+    private javax.swing.JTextField tfUserid;
     // End of variables declaration//GEN-END:variables
+
+
+    private void init() {
+        tfUserid.setEditable(false);
+    
+        System.out.println("userid = " + MemberService.getUserid());
+        tfUserid.setText(MemberService.getUserid());
+    }
+
+    private void addEvent() {
+        btNotice.addActionListener(this);
+        btRental.addActionListener(this);
+        btTicket.addActionListener(this);
+        btMypage.addActionListener(this);
+    }
+    
+    
+    @Override
+    public void actionPerformed(ActionEvent e) {
+
+        if(e.getSource() == btNotice) {
+            Notice f = new Notice();
+            f.setVisible(true);
+        } else if(e.getSource() == btRental) {
+            RentalPage f = new RentalPage();
+            f.setVisible(true);
+        } else if(e.getSource() == btTicket) {
+            TicketPage f = new TicketPage();
+            f.setVisible(true);
+        } else if(e.getSource() == btMypage) {
+            MyPage f = new MyPage();
+            f.setVisible(true);
+        }
+    }
 }

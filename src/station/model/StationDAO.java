@@ -9,6 +9,6 @@ package station.model;
  *
  * @author HONG
  */
-public class stationDAO {
+public class StationDAO {
     
 }

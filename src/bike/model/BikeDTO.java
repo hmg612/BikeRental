@@ -3,12 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package ticket.model;
+package bike.model;
 
 /**
  *
  * @author HONG
  */
-public class ticketDAO {
+public class BikeDTO {
     
 }

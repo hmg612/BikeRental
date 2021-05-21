@@ -5,17 +5,31 @@
  */
 package view;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+import member.model.MemberDAO;
+import member.model.MemberService;
+
 /**
  *
  * @author HONG
  */
-public class LoginPage extends javax.swing.JFrame {
+public class LoginPage extends javax.swing.JFrame implements ActionListener{
 
+    private MemberDAO memberDao;
+    
     /**
      * Creates new form LoginPage
      */
     public LoginPage() {
         initComponents();
+        
+        init();
+        addEvent();
     }
 
     /**
@@ -167,6 +181,73 @@ public class LoginPage extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPasswordField tfPwd;
-    private javax.swing.JTextField tfUserid;
+    public javax.swing.JTextField tfUserid;
     // End of variables declaration//GEN-END:variables
+
+    
+    private void init() {
+        memberDao = new MemberDAO();
+    }
+    
+    
+    private void addEvent() {
+        btLogin.addActionListener(this);
+        btJoin.addActionListener(this);
+        tfPwd.addActionListener(this);
+    }
+    
+    
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if(e.getSource() == btLogin || e.getSource() == tfPwd) {
+            try {
+                loginProc();
+            } catch (SQLException ex) {
+                Logger.getLogger(LoginPage.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        } else if(e.getSource() == btJoin) {
+            register();
+        }
+    }
+
+    private void loginProc() throws SQLException {
+        String userid = tfUserid.getText();
+        String pwd = tfPwd.getText();
+        if(userid == null || userid.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "아이디를 입력하세요");
+            tfUserid.requestFocus();
+            return;
+        }
+        
+        if(pwd == null || pwd.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "비밀번호를 입력하세요");
+            tfPwd.requestFocus();
+            return;
+        }
+        
+        int result = memberDao.loginCheck(userid, pwd);
+        
+        if(result == MemberDAO.LOGIN_OK) {
+            JOptionPane.showMessageDialog(this, userid + "님 환영합니다!!");
+            MemberService.setUserid(userid);
+            System.out.println("userid : " + userid);
+            
+            MainPage f = new MainPage();
+            f.setVisible(true);
+            this.dispose();
+            
+        } else if(result == MemberDAO.PWD_DISAGREE) {
+            JOptionPane.showMessageDialog(this, "비밀번호가 일치하지 않습니다!!");
+        } else if(result == MemberDAO.USERID_NONE) {
+            JOptionPane.showMessageDialog(this, "존재하지 않는 아이디입니다!!");
+        } else {
+            JOptionPane.showMessageDialog(this, "로그인 처리를 실패했습니다!!");
+        }
+    }
+
+    
+    private void register() {
+        MemberInfo f = new MemberInfo(MemberInfo.USER_REGISTER, this);
+        f.setVisible(true);
+    }
 }
