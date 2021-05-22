@@ -7,8 +7,17 @@ package view;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
+import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
 import member.model.MemberService;
+import station.model.StationDAO;
+import station.model.StationDTO;
 
 /**
  *
@@ -16,6 +25,9 @@ import member.model.MemberService;
  */
 public class RentalPage extends javax.swing.JFrame implements ActionListener{
 
+    private StationDAO stationDao;
+    private DefaultTableModel model = new DefaultTableModel();
+    
     /**
      * Creates new form RentalPage
      */
@@ -41,7 +53,7 @@ public class RentalPage extends javax.swing.JFrame implements ActionListener{
         jTextField2 = new javax.swing.JTextField();
         jButton1 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        table = new javax.swing.JTable();
         jPanel2 = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
         jTextField3 = new javax.swing.JTextField();
@@ -62,7 +74,7 @@ public class RentalPage extends javax.swing.JFrame implements ActionListener{
 
         jButton1.setText("조회");
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -73,7 +85,7 @@ public class RentalPage extends javax.swing.JFrame implements ActionListener{
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(table);
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -254,19 +266,27 @@ public class RentalPage extends javax.swing.JFrame implements ActionListener{
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
     private javax.swing.JTextField jTextField2;
     private javax.swing.JTextField jTextField3;
     private javax.swing.JTextField jTextField4;
+    private javax.swing.JTable table;
     private javax.swing.JTextField tfUserid;
     // End of variables declaration//GEN-END:variables
 
     private void init() {
+        
+        stationDao = new StationDAO();
+        
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         tfUserid.setEditable(false);
 
-        //System.out.println("userid = " + MemberService.getUserid());
         tfUserid.setText(MemberService.getUserid());
+        
+        try {
+            showAll();
+        } catch (SQLException ex) {
+            Logger.getLogger(RentalPage.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     private void addEvent() {
@@ -278,6 +298,31 @@ public class RentalPage extends javax.swing.JFrame implements ActionListener{
         if(e.getSource() == btHome) {
                 dispose();
             }
+    }
+
+    private void showAll() throws SQLException {
+        
+        List<StationDTO> list = stationDao.selectAll();
+        
+        String[] colNames = {"대여소번호","대여소명","구","주소","대여 자전거 수"};
+        String[][] data = new String[list.size()][colNames.length];
+        
+        for(int i=0;i<list.size();i++) {
+            StationDTO dto = list.get(i);
+            
+            data[i][0] = dto.getNo()+"";
+            data[i][1] = dto.getStName();
+            data[i][2] = dto.getGu();
+            data[i][3] = dto.getAddress();
+            data[i][4] = dto.getCnt_bike()+"";            
+        }
+        
+        model.setDataVector(data, colNames);
+        table.setModel(model);
+        
+        DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer();
+        dtcr.setHorizontalAlignment(SwingConstants.RIGHT);
+        table.getColumnModel().getColumn(4).setCellRenderer(dtcr);
     }
     
     

@@ -11,6 +11,17 @@
         </file>
     </editor-bookmarks>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
-        <group/>
+        <group>
+            <file>file:/D:/mywork/project/BikeRental/src/notice/model/NoticeDAO.java</file>
+            <file>file:/D:/mywork/project/BikeRental/src/view/MainPage.java</file>
+            <file>file:/D:/mywork/project/BikeRental/src/station/model/StationDTO.java</file>
+            <file>file:/D:/mywork/project/BikeRental/src/notice/model/NoticeDTO.java</file>
+            <file>file:/D:/mywork/project/BikeRental/src/view/Notice.java</file>
+            <file>file:/D:/mywork/project/BikeRental/src/member/model/MemberDTO.java</file>
+            <file>file:/D:/mywork/project/BikeRental/src/view/RentalPage.java</file>
+            <file>file:/D:/mywork/project/BikeRental/src/station/model/StationDAO.java</file>
+            <file>file:/D:/mywork/project/BikeRental/src/member/model/MemberDAO.java</file>
+            <file>file:/D:/mywork/project/BikeRental/src/view/MemberInfo.java</file>
+        </group>
     </open-files>
 </project-private>

@@ -9,8 +9,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
+import javax.swing.table.DefaultTableModel;
 import member.model.MemberService;
+import notice.model.NoticeDAO;
+import notice.model.NoticeDTO;
 
 /**
  *
@@ -18,6 +25,8 @@ import member.model.MemberService;
  */
 public class Notice extends javax.swing.JFrame implements ActionListener, ItemListener{
 
+    private NoticeDAO noticeDao;
+    private DefaultTableModel model = new DefaultTableModel();
     /**
      * Creates new form Notice
      */
@@ -40,7 +49,7 @@ public class Notice extends javax.swing.JFrame implements ActionListener, ItemLi
         jLabel1 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        table = new javax.swing.JTable();
         jPanel1 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
@@ -52,7 +61,7 @@ public class Notice extends javax.swing.JFrame implements ActionListener, ItemLi
 
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("목록"));
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        table.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -63,7 +72,7 @@ public class Notice extends javax.swing.JFrame implements ActionListener, ItemLi
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(table);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -183,17 +192,25 @@ public class Notice extends javax.swing.JFrame implements ActionListener, ItemLi
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTable jTable1;
     private javax.swing.JTextArea jTextArea1;
+    private javax.swing.JTable table;
     private javax.swing.JTextField tfUserid;
     // End of variables declaration//GEN-END:variables
 
     private void init() {
+        
+        noticeDao = new NoticeDAO();
+        
         this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         tfUserid.setEditable(false);
 
-        //System.out.println("userid = " + MemberService.getUserid());
         tfUserid.setText(MemberService.getUserid());
+        
+        try {
+            showAll();
+        } catch (SQLException ex) {
+            Logger.getLogger(RentalPage.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
     
     private void addEvent() {
@@ -210,5 +227,25 @@ public class Notice extends javax.swing.JFrame implements ActionListener, ItemLi
     @Override
     public void itemStateChanged(ItemEvent ie) {
         
+    }
+
+    private void showAll() throws SQLException {
+        
+        List<NoticeDTO> list = noticeDao.selectAll();
+        
+        String[] colNames = {"번호","제목","내용","등록일자"};
+        String[][] data = new String[list.size()][colNames.length];
+        
+        for(int i=0;i<list.size();i++) {
+            NoticeDTO dto = list.get(i);
+            
+            data[i][0] = dto.getNo()+"";
+            data[i][1] = dto.getTitle();
+            data[i][2] = dto.getContents();
+            data[i][3] = dto.getRegdate()+"";
+        }
+        
+        model.setDataVector(data, colNames);
+        table.setModel(model);        
     }
 }

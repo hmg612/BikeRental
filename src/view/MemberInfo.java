@@ -326,8 +326,13 @@ public class MemberInfo extends javax.swing.JFrame implements ActionListener, It
                 Logger.getLogger(MemberInfo.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else if(e.getSource() == btDup) {
-            CheckId f = new CheckId(this, tfUserid.getText());
-            f.setVisible(true);
+            // CheckId f = new CheckId(this, tfUserid.getText());
+            // f.setVisible(true);
+            try {
+                duplicateId();
+            } catch (SQLException ex) {
+                Logger.getLogger(MemberInfo.class.getName()).log(Level.SEVERE, null, ex);
+            }
         } else if(e.getSource() == btCancel) {
             dispose();
         } else if(e.getSource() == btWhy) {
@@ -380,7 +385,12 @@ public class MemberInfo extends javax.swing.JFrame implements ActionListener, It
         String mobile1 = (String) cbPhone1.getSelectedItem();
         String mobile2 = tfPhone2.getText();
         String mobile3 = tfPhone3.getText();
-        float weight = Float.parseFloat(tfWeight.getText());
+        String weight = null;
+        if(!tfWeight.getText().equals("")){
+           weight = tfWeight.getText();
+        } else{
+            weight = "0";
+        }
         
         if(userid == null || userid.isEmpty()) {
             JOptionPane.showMessageDialog(this, "아이디를 입력하세요");
@@ -419,8 +429,9 @@ public class MemberInfo extends javax.swing.JFrame implements ActionListener, It
         dto.setUserid(userid);
         dto.setPwd(pwd);
         dto.setEmail(email);
-        dto.setMobile(mobile);
-        dto.setWeight(weight);
+        dto.setMobile(mobile);        
+        dto.setWeight(Float.parseFloat(weight));
+        
         
         int cnt = memberDao.insertMember(dto);
         
@@ -433,5 +444,32 @@ public class MemberInfo extends javax.swing.JFrame implements ActionListener, It
             result = "회원가입 실패!";
         }
         JOptionPane.showMessageDialog(this, result);
+    }
+    
+    
+    private void duplicateId() throws SQLException {
+        //1
+        String userid = tfUserid.getText();
+        if(userid == null || userid.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "아이디를 입력하세요");
+            tfUserid.requestFocus();
+            return;
+        }
+        
+        //2
+        int result = memberDao.duplicateUserid(userid);
+        
+        //3
+        if(result == MemberDAO.UNUSABLE_ID) {
+            JOptionPane.showMessageDialog(this, userid + "는 이미 존재하는 아이디입니다.");
+            tfUserid.setText("");
+            tfUserid.requestFocus();
+            
+        } else if(result == MemberDAO.USABLE_ID) {
+            JOptionPane.showMessageDialog(this, userid + "는 사용 가능한 아이디입니다.");
+            setIsDuplicated(true);
+        } else {
+            JOptionPane.showMessageDialog(this, "아이디 중복확인 실패!");
+        }
     }
 }
